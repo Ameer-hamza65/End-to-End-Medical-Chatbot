@@ -14,7 +14,7 @@ app = Flask(__name__, template_folder='C:/Users/Hamza/Desktop/End-to-End-Medical
 load_dotenv()
 
 PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
-GROQ_API_KEY='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'
+GROQ_API_KEY='YOUR_API_KEY'
 
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 os.environ["GROQ_API_KEY"] = GROQ_API_KEY
