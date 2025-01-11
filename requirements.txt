@@ -8,4 +8,5 @@ langchain-pinecone
 langchain-community
 langchain-groq
 langchain-experimental
+langchain_huggingface
 -e . 
