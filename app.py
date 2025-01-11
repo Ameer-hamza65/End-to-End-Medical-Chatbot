@@ -33,7 +33,7 @@ docsearch = PineconeVectorStore.from_existing_index(
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
 
-llm = ChatGroq(model_name='llama-3.3-70b-versatile',temperature=0.2, max_tokens=500,api_key=GROQ_API_KEY)
+llm = ChatGroq(model='llama-3.3-70b-versatile',temperature=0.2, max_tokens=500)
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
