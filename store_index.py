@@ -1,36 +1,27 @@
-from src.helper import load_pdf_file, text_split,download_huggingface_embeddings
-from pinecone.grpc import PineconeGRPC as Pinecone
-from pinecone import ServerlessSpec
-from langchain_pinecone import PineconeVectorStore
+from src.helper import load_pdf_file, text_split, download_huggingface_embeddings
+from langchain.vectorstores import FAISS
+from langchain.docstore.in_memory import InMemoryDocstore
 import os
 
+# Load and chunk text
+extracted_data = load_pdf_file(data='data/')
+text_chunks = text_split(extracted_data)
 
-PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
-os.environ['PINECONE_API_KEY']=PINECONE_API_KEY
+# Load HuggingFace embedding model
+embeddings = download_huggingface_embeddings()
+# (Expect an embedding object compatible with langchain_huggingface.HuggingFaceEmbeddings)
 
-
-extracted_data=load_pdf_file(data='data/')
-text_chunks=text_split(extracted_data)
-embeddings=download_huggingface_embeddings()
-
-
-pc=Pinecone(api_key=PINECONE_API_KEY)
-
-index_name='test-bot'
-
-pc.create_index(
-    name=index_name,
-    dimension=384, # Replace with your model dimensions
-    metric="cosine", # Replace with your model metric
-    spec=ServerlessSpec(
-        cloud="aws",
-        region="us-east-1"
-    ) 
-)        
-
-
-docsearch=PineconeVectorStore.from_documents(
-    documents=text_chunks,
-    index_name=index_name,
-    embedding=embeddings
-)
+# Create or load local FAISS index
+index_dir = "faiss_index"
+if os.path.exists(index_dir):
+    # Load from disk
+    vector_store = FAISS.load_local(index_dir, embeddings)
+    print("✅ Loaded existing FAISS index")
+else:
+    # Build fresh index
+    vector_store = FAISS.from_documents(
+        documents=text_chunks,
+        embedding=embeddings
+    )
+    vector_store.save_local(index_dir)
+    print("✅ Built and saved new FAISS index")
