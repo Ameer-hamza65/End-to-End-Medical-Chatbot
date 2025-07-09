@@ -10,7 +10,10 @@ from src.prompt import system_prompt
 import os
 
 load_dotenv()
+
+
 app = Flask(__name__, template_folder='templates')
+
 #  Embeddings
 embeddings = download_huggingface_embeddings()
 
