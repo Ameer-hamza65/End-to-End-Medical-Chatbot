@@ -11,7 +11,6 @@ import os
 
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
-
 #  Embeddings
 embeddings = download_huggingface_embeddings()
 
@@ -33,8 +32,8 @@ else:
 retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
 #  RAG with Gemini
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
-llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash', api_key=GEMINI_API_KEY)
+
+llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash',api_key=os.getenv('GOOGLE_API_KEY'))
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
@@ -59,5 +58,5 @@ def chat():
         print("Error:", e)
         return "An error occurred."
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     app.run(host="0.0.0.0", port=8080, debug=True)
